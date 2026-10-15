@@ -1,6 +1,6 @@
 # VisiCue
 
-Official VisiCue downloads for macOS and Windows. Current versions: **Mac 1.0.21**, **Windows 1.0.20**.
+Official VisiCue downloads for macOS and Windows. Current versions: **Mac 1.0.22**, **Windows 1.0.22**.
 
 ## Downloads
 
@@ -10,7 +10,9 @@ Official VisiCue downloads for macOS and Windows. Current versions: **Mac 1.0.21
 
 Both platforms support multilingual speech triggers, with up to two active speech languages. Windows can use downloaded Vosk models or installed Windows speech languages.
 
-Mac 1.0.21 also includes **Check for Updates…** in the top-right VisiCue icon menu.
+Version 1.0.22 adds **interface language settings with 25 language choices** and a one-time language chooser for new installations and upgrades. English appears once; regional accents remain in speech recognition. Urdu and Kashmiri support right-to-left layout. Open Settings to change the interface language later; Windows requires a restart after changing it. Translations are machine-assisted and wording feedback is welcome.
+
+**Check for Updates…** remains available in the Mac app menu and top-right VisiCue icon menu, and the Windows menu and tray.
 
 ## Automatic updates
 
@@ -18,7 +20,7 @@ Check for Updates is configured in these builds. Mac uses Sparkle with Ed25519-s
 
 ## Validation and publisher signing
 
-The universal Mac archive, app launch, signature verification, live update-feed check, DMG checksums, and mounted DMG contents passed verification. The Windows x64 build and 75 core checks passed. [Read the validation details](VALIDATION.md). Windows hardware/UI and installation tests, and a two-version installation/update cycle, remain unverified.
+The universal Mac archive, app launch, signature verification, live update-feed check, DMG checksums, and mounted DMG contents passed verification. The Windows x64 build and 26,362 core/localization checks passed; 26,261 Mac localization checks also passed. [Read the validation details](VALIDATION.md). Windows hardware/UI and installation tests, and a two-version installation/update cycle, remain unverified.
 
 The Mac app is locally signed and not Apple-notarized. Windows binaries are not Authenticode-signed. OS unidentified-publisher warnings may appear; publisher signing requires certificates not present on the build host.
 
