@@ -4,6 +4,14 @@
     <title>VisiCue</title>
     <item>
       <title>VisiCue</title>
+      <sparkle:version>22</sparkle:version>
+      <sparkle:shortVersionString>1.0.22</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <description>Adds interface language settings with 25 language options, a one-time language chooser for new installs and upgrades, and right-to-left layouts.</description>
+      <enclosure url="https://github.com/josephcaudill293/visicue-releases/releases/download/v1.0.22/VisiCue-macOS.zip" length="3644539" type="application/octet-stream" sparkle:edSignature="6tKeINag3zrTZ811DWxeJJO/156O5MM1qAkBuI6kJJbTGnB74XIYXur9E+T3cznAdVNaDO9aOAgFnlJ8lrwXCg==" />
+    </item>
+    <item>
+      <title>VisiCue</title>
       <sparkle:version>21</sparkle:version>
       <sparkle:shortVersionString>1.0.21</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
