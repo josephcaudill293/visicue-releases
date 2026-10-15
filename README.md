@@ -1,21 +1,28 @@
 # VisiCue
 
-Official downloads and update information for VisiCue.
+Official VisiCue downloads for macOS and Windows. Current release: **1.0.20**.
 
 ## Downloads
 
-- **Windows x64:** [Download VisiCue installer](https://github.com/josephcaudill293/visicue-releases/releases/latest/download/VisiCue-Windows-Setup.exe). Includes the .NET runtime and offline English speech model. Additional speech languages use Vosk models or installed Windows speech languages, with up to two active at once.
-- **macOS:** Release packaging and update signing configuration are still in progress.
+- [Download for Mac](https://github.com/josephcaudill293/visicue-releases/releases/latest/download/VisiCue-macOS.zip) — universal app for Apple Silicon and Intel; macOS 14 or later. Extract the ZIP and move VisiCue to Applications.
+- [Download Windows installer](https://github.com/josephcaudill293/visicue-releases/releases/latest/download/VisiCue-Windows-Setup.exe) — Windows x64; runtime and offline English model included.
+- [Download Windows portable ZIP](https://github.com/josephcaudill293/visicue-releases/releases/latest/download/VisiCue-Windows-Portable.zip) — extract the entire folder before opening the app.
 
-[Release notes and validation](https://github.com/josephcaudill293/visicue-releases/releases/latest).
-
-The Windows release is unsigned. Windows hardware/UI, installation, and upgrade testing remain outstanding. The published package retains internal version 1.0.19-preview.2; GitHub classifies it as a regular release. The portable ZIP is not currently published.
+Both platforms support multilingual speech triggers, with up to two active speech languages. Windows can use downloaded Vosk models or installed Windows speech languages.
 
 ## Automatic updates
 
-Updater integration is implemented, but production update feeds and signing configuration are not complete. This Windows package has no production feed configured and will require manual installation of the first update-enabled release.
+Check for Updates is configured in these builds. Mac uses Sparkle with Ed25519-signed archives; Windows uses Velopack with HTTPS hosting and package checksums. Existing builds without a configured feed need one manual installation of 1.0.20. Portable Windows copies require installation before in-app updating.
 
-This repository contains downloads and public release information. Application source code and private signing keys are not published here. GitHub's automatically generated source archives contain only the release repository documentation, not app installers.
+## Validation and publisher signing
+
+The universal Mac archive, app launch, signature verification, and live update-feed check passed. The Windows x64 build and 75 core checks passed. [Read the validation details](VALIDATION.md). Windows hardware/UI and installation tests, and a two-version installation/update cycle, remain unverified.
+
+The Mac app is locally signed and not Apple-notarized. Windows binaries are not Authenticode-signed. OS unidentified-publisher warnings may appear; publisher signing requires certificates not present on the build host.
+
+[Release notes and checksums](https://github.com/josephcaudill293/visicue-releases/releases/latest).
+
+This repository contains downloads and public release information. Application source code and private signing keys are not published here. GitHub's generated source archives contain repository documentation, not app installers.
 
 ## Feedback
 
