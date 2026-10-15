@@ -1,6 +1,6 @@
 # VisiCue
 
-Official VisiCue downloads for macOS and Windows. Current release: **1.0.20**.
+Official VisiCue downloads for macOS and Windows. Current versions: **Mac 1.0.21**, **Windows 1.0.20**.
 
 ## Downloads
 
@@ -9,6 +9,8 @@ Official VisiCue downloads for macOS and Windows. Current release: **1.0.20**.
 - [Download Windows portable ZIP](https://github.com/josephcaudill293/visicue-releases/releases/latest/download/VisiCue-Windows-Portable.zip) — extract the entire folder before opening the app.
 
 Both platforms support multilingual speech triggers, with up to two active speech languages. Windows can use downloaded Vosk models or installed Windows speech languages.
+
+Mac 1.0.21 also includes **Check for Updates…** in the top-right VisiCue icon menu.
 
 ## Automatic updates
 
