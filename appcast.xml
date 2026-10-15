@@ -8,7 +8,7 @@
       <sparkle:shortVersionString>1.0.20</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
       <description>Multilingual speech recognition, live-show update interlocks, and automatic updates.</description>
-      <enclosure url="https://github.com/josephcaudill293/visicue-releases/releases/download/v1.0.20/VisiCue-macOS.zip" length="3262772" type="application/octet-stream" sparkle:edSignature="GYC3AayGioCmekYMF8CU2uoXGxvvv61GOd/q+jvjo1zBqpg+msbnlFh59oPlKkWMe9rT8s98/gzKiVCrpkLDDw==" />
+      <enclosure url="https://github.com/josephcaudill293/visicue-releases/releases/download/v1.0.20/VisiCue-macOS.zip" length="3265354" type="application/octet-stream" sparkle:edSignature="TutI+3mBAXcXIP7P03lk4QIUMsdXLp8ROkagqp1OPx+LOS/I0MEjLHQIbZGQkGSinj6DGuo3gaTgwPmfEzWvBw==" />
     </item>
   </channel>
 </rss>
