@@ -1,25 +1,22 @@
-# VisiCue 1.0.20 validation
+# VisiCue 1.0.22 validation
 
-## macOS
+Both platforms now ship an offline interface translation catalog with 25 language choices and 525 source keys. English is listed once; speech-recognition regions remain independent. Native-language names make the first-run picker usable without navigating an English settings page.
 
-- Full Release archive compiled in Xcode 27 for Intel x86_64 and Apple Silicon arm64.
-- Bundle identifier remains com.JosephCaudillMusic.VisiCue; build number 20.
-- App launched and rendered its main interface, both speech-language selectors, input controls, cues, MIDI controls, and Companion controls.
-- Check for Updates contacted the published Sparkle feed and reported the installed build was current.
-- The final app passes codesign --verify --deep --strict. It is locally signed, not Apple Developer ID signed or notarized.
-- The distributed ZIP includes Sparkle's license notice. Its Ed25519 update signature was independently verified against the public key embedded in the app.
-- Existing Mac updater interlock regression checks cover running shows and pending audio startup.
+A missing installation preference triggers setup once on new installs and upgrades. Continue/Apply persists completion. Settings allows later changes. Preferences stay outside show files. Windows requires restart after a settings language change. Urdu and Kashmiri use right-to-left layout. Translations are machine-assisted with targeted editorial corrections; native-speaker review is still welcome. System dialogs and updater panels use their own supported translations.
 
-## Windows
+## Verified
 
-- .NET 10 self-contained Windows x64 publish and Velopack 1.0.20 packaging completed.
-- 75 core regression checks pass, covering trigger confirmations/deduplication, show round trips, atomic saving, request authentication, PCM backpressure, invalid audio samples, MIDI ownership/timing, and schedules.
-- The update package contains the production HTTPS feed configuration and bundled offline English model.
-- Every package's byte length and SHA256 match releases.win.json.
-- Previous native Vosk replay and production Mac show-file round-trip tests passed. Those validate the model/format, not Windows hardware drivers.
+- Universal Intel/Apple Silicon Mac Release archive (version 1.0.22, build 22) compiled in Xcode.
+- The packaged Mac app launches. The first-run language selector, German preview, native language names, one English entry, language Settings from the main window and Command-comma, Urdu right-to-left preview, preference persistence, and relaunch without repeated setup were exercised.
+- 26,261 checks on the actual Swift localization code passed: language resolution, coverage and placeholders.
+- Windows x64 self-contained publish and Velopack setup, portable and full update package creation completed.
+- 26,362 Windows core/localization checks passed: installation preference migration/persistence, regional language resolution, catalog coverage/placeholders, preservation of user placeholder text, show file compatibility, trigger confirmation/deduplication, atomic saving, remote authentication, PCM backpressure, and MIDI ownership/timing.
+- Mac app signature passes deep/strict verification; archive contains both CPU architectures and the Sparkle license.
+- Sparkle ZIP Ed25519 signature was independently verified with the embedded public key.
+- DMG checksum verified. Mounted image contains the same signed app and catalog and a working /Applications shortcut.
+- Release staging validates versions, ZIP/DMG structure, update-feed package sizes/checksums, and stable download filenames.
+- Technical URLs, API paths, and Companion variable names in the catalog retain their exact literal values.
 
-## Remaining checks and signing
+## Limits
 
-Windows hardware/UI testing is deferred at the owner's request. Windows installation/uninstallation and a two-version download/install/restart cycle have not been verified. Mac speech/audio hardware testing and an actual two-version Sparkle installation are also not established by the checks above.
-
-Apple Developer ID signing/notarization and Windows Authenticode publisher signing require certificates not present on this build host. OS unidentified-publisher warnings may appear. Cryptographic Sparkle update signing is configured independently of Apple notarization.
+Windows hardware/UI, installation/uninstallation, and a full two-version installation/update cycle have not been tested on this Mac host. Existing live speech/audio behavior is preserved; these checks do not establish new audio hardware performance results. The Mac app remains locally signed and not Apple-notarized; Windows remains without Authenticode publisher signing.
