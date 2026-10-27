@@ -1,0 +1,39 @@
+name: Attach verified 1.0.23 updater package
+on:
+  workflow_dispatch:
+permissions:
+  actions: read
+  contents: write
+jobs:
+  attach:
+    runs-on: windows-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Download and verify the tested updater package
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          gh run download 40524161856 --repo $env:GITHUB_REPOSITORY --name VisiCue-Windows-1.0.23 --dir verified
+          if ($LASTEXITCODE -ne 0) { throw 'Verified artifact unavailable' }
+          $package = 'verified/VisiCue.Windows-1.0.23-full.nupkg'
+          if ((Get-FileHash $package -Algorithm SHA256).Hash -ne '85096B70D256F547852870E905E3905C06FF36A5E0272E225B07E3EBD279A970') { throw 'Tested package checksum mismatch' }
+      - name: Attach only the verified package to the existing release draft
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $headers = @{ Authorization = "Bearer $env:GH_TOKEN"; Accept = 'application/vnd.github+json' }
+          $releases = Invoke-RestMethod "https://api.github.com/repos/$env:GITHUB_REPOSITORY/releases?per_page=100" -Headers $headers
+          $drafts = @($releases | Where-Object { $_.draft -and $_.name -eq 'VisiCue' -and $_.body.StartsWith('VisiCue 1.0.23') })
+          if ($drafts.Count -ne 1) { throw 'Expected exactly one existing 1.0.23 draft' }
+          $draft = $drafts[0]
+          $name = 'VisiCue.Windows-1.0.23-full.nupkg'
+          $expected = 'sha256:85096b70d256f547852870e905e3905c06ff36a5e0272e225b07e3ebd279a970'
+          $existing = @($draft.assets | Where-Object name -eq $name)
+          if ($existing.Count -eq 0) {
+            $uri = "https://uploads.github.com/repos/$env:GITHUB_REPOSITORY/releases/$($draft.id)/assets?name=$name"
+            $asset = Invoke-RestMethod $uri -Method Post -Headers $headers -ContentType 'application/octet-stream' -InFile "verified/$name"
+          } elseif ($existing.Count -eq 1) { $asset = $existing[0] }
+          else { throw 'Duplicate updater assets' }
+          if ($asset.digest -ne $expected -or $asset.size -ne 133687012) { throw 'Uploaded asset verification failed' }
+          Write-Output "Verified updater package attached to draft release $($draft.id). No release was published and no feed was changed."
