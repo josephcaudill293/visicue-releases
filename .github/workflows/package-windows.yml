@@ -63,10 +63,10 @@ jobs:
           if ($app.HasExited) { throw "Updated app startup failed: $($app.ExitCode)" }
           Stop-Process -Id $app.Id -Force
           if ((Get-Content "$data/release-retention-test.txt") -ne 'retain user data') { throw 'Update lost data' }
-          & "$dest/Update.exe" uninstall --silent
-          if ($LASTEXITCODE -ne 0) { throw 'Updated uninstall failed' }
+          $removed = Start-Process "$dest/Update.exe" -ArgumentList 'uninstall','--silent' -Wait -PassThru
+          if ($removed.ExitCode -ne 0) { throw 'Updated uninstall failed' }
           if (-not (Test-Path "$data/release-retention-test.txt")) { throw 'Uninstall removed data' }
-          Get-ChildItem releases -File | Get-FileHash -Algorithm SHA256 | Format-List | Out-File releases/Verified-SHA256.txt
+          Get-ChildItem releases -File | Where-Object Name -ne 'Verified-SHA256.txt' | Get-FileHash -Algorithm SHA256 | Format-List | Out-File releases/Verified-SHA256.txt
       - name: Save verified distribution files
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
