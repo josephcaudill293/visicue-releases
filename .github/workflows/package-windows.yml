@@ -1,0 +1,75 @@
+name: Package and verify Windows 1.0.23
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: windows-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Download verified compiled application
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          gh release download v1.0.23-staging --repo $env:GITHUB_REPOSITORY --pattern VisiCue-Windows-build.zip --dir input
+          if ($LASTEXITCODE -ne 0) { throw 'Compiled app unavailable' }
+          if ((Get-FileHash input/VisiCue-Windows-build.zip -Algorithm SHA256).Hash -ne '9DFDE27DC40195BF958FD69823C6B1A2C8840B27A4B7F406C05FA5F9C423E780') { throw 'Compiled app checksum mismatch' }
+          Expand-Archive input/VisiCue-Windows-build.zip app
+          if (-not (Test-Path app/models/vosk-model-small-en-us-0.15/am/final.mdl)) { throw 'Offline model missing' }
+          if ((Get-Item app/VisiCue.Windows.dll).VersionInfo.ProductVersion -notlike '1.0.23*') { throw 'App version mismatch' }
+      - name: Create Velopack installer and update package
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          dotnet tool install vpk --version 1.2.0 --tool-path tools
+          if ($LASTEXITCODE -ne 0) { throw 'Official packaging tool unavailable' }
+          & ./tools/vpk.exe pack --runtime win-x64 --packId VisiCue.Windows --packVersion 1.0.23 --packDir app --mainExe VisiCue.Windows.exe --packTitle VisiCue --packAuthors 'Joseph Caudill' --icon app/Assets/VisiCue.ico --outputDir releases
+          if ($LASTEXITCODE -ne 0) { throw 'Packaging failed' }
+      - name: Verify clean install and startup
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $setup = (Get-ChildItem releases/*Setup.exe).FullName
+          $dest = Join-Path $env:RUNNER_TEMP VisiCue-Clean-Test
+          $p = Start-Process $setup -ArgumentList '--silent','--installto',$dest -Wait -PassThru
+          if ($p.ExitCode -ne 0) { throw 'Clean installation failed' }
+          if ((Get-FileHash "$dest/current/VisiCue.Windows.dll").Hash -ne (Get-FileHash app/VisiCue.Windows.dll).Hash) { throw 'Installed payload mismatch' }
+          $app = Start-Process "$dest/current/VisiCue.Windows.exe" -PassThru
+          Start-Sleep -Seconds 10
+          if ($app.HasExited) { throw "Startup failed: $($app.ExitCode)" }
+          Stop-Process -Id $app.Id -Force
+          & "$dest/Update.exe" uninstall --silent
+          if ($LASTEXITCODE -ne 0) { throw 'Clean uninstall failed' }
+      - name: Verify actual update from published 1.0.22
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          gh release download v1.0.22 --repo $env:GITHUB_REPOSITORY --pattern VisiCue-Windows-Setup.exe --dir previous
+          if ($LASTEXITCODE -ne 0) { throw 'Previous installer unavailable' }
+          $dest = Join-Path $env:RUNNER_TEMP VisiCue-Upgrade-Test
+          $p = Start-Process (Resolve-Path previous/VisiCue-Windows-Setup.exe) -ArgumentList '--silent','--installto',$dest -Wait -PassThru
+          if ($p.ExitCode -ne 0) { throw 'Previous installation failed' }
+          $data = Join-Path $env:LOCALAPPDATA VisiCue
+          New-Item $data -ItemType Directory -Force | Out-Null
+          Set-Content "$data/release-retention-test.txt" 'retain user data'
+          $package = (Get-ChildItem releases/*full.nupkg).FullName
+          & "$dest/Update.exe" apply --package $package --norestart --silent
+          if ($LASTEXITCODE -ne 0) { throw 'Update apply failed' }
+          if ((Get-FileHash "$dest/current/VisiCue.Windows.dll").Hash -ne (Get-FileHash app/VisiCue.Windows.dll).Hash) { throw 'Updated payload mismatch' }
+          $app = Start-Process "$dest/current/VisiCue.Windows.exe" -PassThru
+          Start-Sleep -Seconds 10
+          if ($app.HasExited) { throw "Updated app startup failed: $($app.ExitCode)" }
+          Stop-Process -Id $app.Id -Force
+          if ((Get-Content "$data/release-retention-test.txt") -ne 'retain user data') { throw 'Update lost data' }
+          & "$dest/Update.exe" uninstall --silent
+          if ($LASTEXITCODE -ne 0) { throw 'Updated uninstall failed' }
+          if (-not (Test-Path "$data/release-retention-test.txt")) { throw 'Uninstall removed data' }
+          Get-ChildItem releases -File | Get-FileHash -Algorithm SHA256 | Format-List | Out-File releases/Verified-SHA256.txt
+      - name: Save verified distribution files
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: VisiCue-Windows-1.0.23
+          path: releases/*
+          retention-days: 7
