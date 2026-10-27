@@ -40,8 +40,8 @@ jobs:
           Start-Sleep -Seconds 10
           if ($app.HasExited) { throw "Startup failed: $($app.ExitCode)" }
           Stop-Process -Id $app.Id -Force
-          & "$dest/Update.exe" uninstall --silent
-          if ($LASTEXITCODE -ne 0) { throw 'Clean uninstall failed' }
+          $removed = Start-Process "$dest/Update.exe" -ArgumentList 'uninstall','--silent' -Wait -PassThru
+          if ($removed.ExitCode -ne 0) { throw 'Clean uninstall failed' }
       - name: Verify actual update from published 1.0.22
         shell: pwsh
         run: |
@@ -55,8 +55,8 @@ jobs:
           New-Item $data -ItemType Directory -Force | Out-Null
           Set-Content "$data/release-retention-test.txt" 'retain user data'
           $package = (Get-ChildItem releases/*full.nupkg).FullName
-          & "$dest/Update.exe" apply --package $package --norestart --silent
-          if ($LASTEXITCODE -ne 0) { throw 'Update apply failed' }
+          $updated = Start-Process "$dest/Update.exe" -ArgumentList 'apply','--package',$package,'--norestart','--silent' -Wait -PassThru
+          if ($updated.ExitCode -ne 0) { throw 'Update apply failed' }
           if ((Get-FileHash "$dest/current/VisiCue.Windows.dll").Hash -ne (Get-FileHash app/VisiCue.Windows.dll).Hash) { throw 'Updated payload mismatch' }
           $app = Start-Process "$dest/current/VisiCue.Windows.exe" -PassThru
           Start-Sleep -Seconds 10
