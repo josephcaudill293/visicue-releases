@@ -1,30 +1,39 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
-  <channel>
-    <title>VisiCue</title>
-    <item>
-      <title>VisiCue</title>
-      <sparkle:version>22</sparkle:version>
-      <sparkle:shortVersionString>1.0.22</sparkle:shortVersionString>
-      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
-      <description>Adds interface language settings with 25 language options, a one-time language chooser for new installs and upgrades, and right-to-left layouts.</description>
-      <enclosure url="https://github.com/josephcaudill293/visicue-releases/releases/download/v1.0.22/VisiCue-macOS.zip" length="3644539" type="application/octet-stream" sparkle:edSignature="6tKeINag3zrTZ811DWxeJJO/156O5MM1qAkBuI6kJJbTGnB74XIYXur9E+T3cznAdVNaDO9aOAgFnlJ8lrwXCg==" />
-    </item>
-    <item>
-      <title>VisiCue</title>
-      <sparkle:version>21</sparkle:version>
-      <sparkle:shortVersionString>1.0.21</sparkle:shortVersionString>
-      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
-      <description>Adds Check for Updates to the top-right VisiCue status icon menu.</description>
-      <enclosure url="https://github.com/josephcaudill293/visicue-releases/releases/download/v1.0.21/VisiCue-macOS.zip" length="3266633" type="application/octet-stream" sparkle:edSignature="sFRRNiFVqu972+9dt2Cataz4dCU4MbOASqJWTvroMBJBTSONnBt+fiIElWBB67FXjVOMCZdMOp+tMJnkd9cnCg==" />
-    </item>
-    <item>
-      <title>VisiCue</title>
-      <sparkle:version>20</sparkle:version>
-      <sparkle:shortVersionString>1.0.20</sparkle:shortVersionString>
-      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
-      <description>Multilingual speech recognition, live-show update interlocks, and automatic updates.</description>
-      <enclosure url="https://github.com/josephcaudill293/visicue-releases/releases/download/v1.0.20/VisiCue-macOS.zip" length="3265354" type="application/octet-stream" sparkle:edSignature="TutI+3mBAXcXIP7P03lk4QIUMsdXLp8ROkagqp1OPx+LOS/I0MEjLHQIbZGQkGSinj6DGuo3gaTgwPmfEzWvBw==" />
-    </item>
-  </channel>
+    <channel>
+        <title>VisiCue</title>
+        <item>
+            <title>1.0.23</title>
+            <pubDate>Tue, 27 Oct 2026 10:39:33 -0400</pubDate>
+            <sparkle:version>23</sparkle:version>
+            <sparkle:shortVersionString>1.0.23</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description><![CDATA[<p>Optional transcript logging for Claarify: timestamped finalized speech from every configured recognition input, cue dispatches, service markers, and interruption records. Choose the export folder in Settings. Original audio is not recorded.</p>]]></description>
+            <enclosure url="https://github.com/josephcaudill293/visicue-releases/releases/download/v1.0.23/VisiCue-macOS.zip" length="4543829" type="application/octet-stream" sparkle:edSignature="gLaxB4gqYda9n3zShqajLQ8RAG+2mDKSBJioNtn4R7iUU6nWLtGPARfhE0gZdVeMFnfXMlwxsoHLjE5Gay1/Bw=="/>
+        </item>
+        <item>
+            <title>VisiCue</title>
+            <sparkle:version>22</sparkle:version>
+            <sparkle:shortVersionString>1.0.22</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description>Adds interface language settings with 25 language options, a one-time language chooser for new installs and upgrades, and right-to-left layouts.</description>
+            <enclosure url="https://github.com/josephcaudill293/visicue-releases/releases/download/v1.0.22/VisiCue-macOS.zip" length="3644539" type="application/octet-stream" sparkle:edSignature="6tKeINag3zrTZ811DWxeJJO/156O5MM1qAkBuI6kJJbTGnB74XIYXur9E+T3cznAdVNaDO9aOAgFnlJ8lrwXCg=="/>
+        </item>
+        <item>
+            <title>VisiCue</title>
+            <sparkle:version>21</sparkle:version>
+            <sparkle:shortVersionString>1.0.21</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description>Adds Check for Updates to the top-right VisiCue status icon menu.</description>
+            <enclosure url="https://github.com/josephcaudill293/visicue-releases/releases/download/v1.0.21/VisiCue-macOS.zip" length="3266633" type="application/octet-stream" sparkle:edSignature="sFRRNiFVqu972+9dt2Cataz4dCU4MbOASqJWTvroMBJBTSONnBt+fiIElWBB67FXjVOMCZdMOp+tMJnkd9cnCg=="/>
+        </item>
+        <item>
+            <title>VisiCue</title>
+            <sparkle:version>20</sparkle:version>
+            <sparkle:shortVersionString>1.0.20</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description>Multilingual speech recognition, live-show update interlocks, and automatic updates.</description>
+            <enclosure url="https://github.com/josephcaudill293/visicue-releases/releases/download/v1.0.20/VisiCue-macOS.zip" length="3265354" type="application/octet-stream" sparkle:edSignature="TutI+3mBAXcXIP7P03lk4QIUMsdXLp8ROkagqp1OPx+LOS/I0MEjLHQIbZGQkGSinj6DGuo3gaTgwPmfEzWvBw=="/>
+        </item>
+    </channel>
 </rss>
