@@ -1,4 +1,4 @@
-name: Package and verify Windows 1.0.23
+name: Package and verify Windows 1.0.24
 on:
   workflow_dispatch:
 permissions:
@@ -13,19 +13,19 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-          gh release download v1.0.23-staging --repo $env:GITHUB_REPOSITORY --pattern VisiCue-Windows-build.zip --dir input
+          gh release download v1.0.24-staging --repo $env:GITHUB_REPOSITORY --pattern VisiCue-1.0.24-Windows-build.zip --dir input
           if ($LASTEXITCODE -ne 0) { throw 'Compiled app unavailable' }
-          if ((Get-FileHash input/VisiCue-Windows-build.zip -Algorithm SHA256).Hash -ne '9DFDE27DC40195BF958FD69823C6B1A2C8840B27A4B7F406C05FA5F9C423E780') { throw 'Compiled app checksum mismatch' }
-          Expand-Archive input/VisiCue-Windows-build.zip app
+          if ((Get-FileHash input/VisiCue-1.0.24-Windows-build.zip -Algorithm SHA256).Hash -ne 'F427BAA2F9749A55EF27D8CEFFF855EDFE2DD87E76EAAD8ABD6789319E0EEA1F') { throw 'Compiled app checksum mismatch' }
+          Expand-Archive input/VisiCue-1.0.24-Windows-build.zip app
           if (-not (Test-Path app/models/vosk-model-small-en-us-0.15/am/final.mdl)) { throw 'Offline model missing' }
-          if ((Get-Item app/VisiCue.Windows.dll).VersionInfo.ProductVersion -notlike '1.0.23*') { throw 'App version mismatch' }
+          if ((Get-Item app/VisiCue.Windows.dll).VersionInfo.ProductVersion -notlike '1.0.24*') { throw 'App version mismatch' }
       - name: Create Velopack installer and update package
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
           dotnet tool install vpk --version 1.2.0 --tool-path tools
           if ($LASTEXITCODE -ne 0) { throw 'Official packaging tool unavailable' }
-          & ./tools/vpk.exe pack --runtime win-x64 --packId VisiCue.Windows --packVersion 1.0.23 --packDir app --mainExe VisiCue.Windows.exe --packTitle VisiCue --packAuthors 'Joseph Caudill' --icon app/Assets/VisiCue.ico --outputDir releases
+          & ./tools/vpk.exe pack --runtime win-x64 --packId VisiCue.Windows --packVersion 1.0.24 --packDir app --mainExe VisiCue.Windows.exe --packTitle VisiCue --packAuthors 'Joseph Caudill' --icon app/Assets/VisiCue.ico --outputDir releases
           if ($LASTEXITCODE -ne 0) { throw 'Packaging failed' }
       - name: Verify clean install and startup
         shell: pwsh
@@ -42,11 +42,11 @@ jobs:
           Stop-Process -Id $app.Id -Force
           $removed = Start-Process "$dest/Update.exe" -ArgumentList 'uninstall','--silent' -Wait -PassThru
           if ($removed.ExitCode -ne 0) { throw 'Clean uninstall failed' }
-      - name: Verify actual update from published 1.0.22
+      - name: Verify actual update from published 1.0.23
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-          gh release download v1.0.22 --repo $env:GITHUB_REPOSITORY --pattern VisiCue-Windows-Setup.exe --dir previous
+          gh release download v1.0.23 --repo $env:GITHUB_REPOSITORY --pattern VisiCue-Windows-Setup.exe --dir previous
           if ($LASTEXITCODE -ne 0) { throw 'Previous installer unavailable' }
           $dest = Join-Path $env:RUNNER_TEMP VisiCue-Upgrade-Test
           $p = Start-Process (Resolve-Path previous/VisiCue-Windows-Setup.exe) -ArgumentList '--silent','--installto',$dest -Wait -PassThru
@@ -70,6 +70,6 @@ jobs:
       - name: Save verified distribution files
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: VisiCue-Windows-1.0.23
+          name: VisiCue-Windows-1.0.24
           path: releases/*
           retention-days: 7
