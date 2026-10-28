@@ -1,0 +1,52 @@
+name: Attach verified 1.0.24 Windows distribution
+on:
+  workflow_dispatch:
+permissions:
+  actions: read
+  contents: write
+jobs:
+  attach:
+    runs-on: windows-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Download only the successful tested distribution
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $headers = @{ Authorization = "Bearer $env:GH_TOKEN"; Accept = 'application/vnd.github+json' }
+          $run = Invoke-RestMethod "https://api.github.com/repos/$env:GITHUB_REPOSITORY/actions/runs/40749844415" -Headers $headers
+          if ($run.conclusion -ne 'success' -or $run.head_sha -ne '8a690084725abc67efc91e1a5444b4cb5325a7b7') { throw 'Required validation run did not pass' }
+          gh run download 40749844415 --repo $env:GITHUB_REPOSITORY --name VisiCue-Windows-1.0.24 --dir verified
+          if ($LASTEXITCODE -ne 0) { throw 'Verified artifact unavailable' }
+          $feed = Get-Content verified/releases.win.json -Raw | ConvertFrom-Json
+          foreach ($asset in $feed.Assets) {
+            if ($asset.Version -ne '1.0.24') { throw 'Unexpected version' }
+            $path = Join-Path verified $asset.FileName
+            if ((Get-FileHash $path -Algorithm SHA256).Hash -ne $asset.SHA256 -or (Get-Item $path).Length -ne $asset.Size) { throw 'Package verification failed' }
+          }
+          Copy-Item (Get-ChildItem verified/*Setup.exe).FullName verified/VisiCue-Windows-Setup.exe -Force
+          Copy-Item (Get-ChildItem verified/*Portable.zip).FullName verified/VisiCue-Windows-Portable.zip -Force
+      - name: Attach verified Windows files to the existing draft
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $headers = @{ Authorization = "Bearer $env:GH_TOKEN"; Accept = 'application/vnd.github+json' }
+          $releases = Invoke-RestMethod "https://api.github.com/repos/$env:GITHUB_REPOSITORY/releases?per_page=100" -Headers $headers
+          $drafts = @($releases | Where-Object { $_.draft -and $_.name -eq 'VisiCue' -and $_.body.StartsWith('Mac and Windows 1.0.24') })
+          if ($drafts.Count -ne 1) { throw 'Expected exactly one existing 1.0.24 draft' }
+          $draft = $drafts[0]
+          $files = @('VisiCue-Windows-Setup.exe','VisiCue-Windows-Portable.zip','VisiCue.Windows-1.0.24-full.nupkg','releases.win.json')
+          foreach ($name in $files) {
+            $path = Join-Path verified $name
+            $expected = 'sha256:' + (Get-FileHash $path -Algorithm SHA256).Hash.ToLower()
+            $existing = @($draft.assets | Where-Object name -eq $name)
+            if ($existing.Count -eq 0) {
+              $uri = "https://uploads.github.com/repos/$env:GITHUB_REPOSITORY/releases/$($draft.id)/assets?name=$name"
+              $asset = Invoke-RestMethod $uri -Method Post -Headers $headers -ContentType 'application/octet-stream' -InFile $path
+            } elseif ($existing.Count -eq 1) { $asset = $existing[0] }
+            else { throw 'Duplicate asset' }
+            if ($asset.digest -ne $expected -or $asset.size -ne (Get-Item $path).Length) { throw 'Uploaded asset verification failed' }
+            Write-Output "Verified $name $expected"
+          }
+          Write-Output 'Windows distribution attached. Draft remains unpublished; production feeds unchanged.'
